@@ -37,5 +37,13 @@
             }
 
         </table>
+        <p>
+            @if (ViewBag.Prev)
+            {<a href="#" id="prev"><</a>}
+            <span style="margin:5px;" id="Page">@ViewBag.Page</span> /
+            <span style="margin:5px;" id="TotalPages">@ViewBag.TotalPages</span>
+            @if (ViewBag.Next)
+            {<a href="#" id="next">></a>}
+        </p>
     </div>
 </div>

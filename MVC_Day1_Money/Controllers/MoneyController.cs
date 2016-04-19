@@ -28,10 +28,19 @@ namespace MVC_Day1_Money.Controllers
         // GET: Money
         public ActionResult Index()
         {
+            ViewBag.Categorys = Categorys;
+            return View();
+            //List<Money> Moneys = GetMoney();
+            //return View(Moneys);
+        }
+
+        public ActionResult _MoneyListPartialView()
+        {
             int DataCount = MoneyDB.AccountBook.Count();
             int TotalPages = DataCount % 50 == 0 ? (DataCount / 50) : (DataCount / 50) + 1;
-            ViewBag.Categorys = Categorys;
+
             ViewBag.TotalPages = TotalPages;
+            ViewBag.Counts = DataCount;
             ViewBag.Page = 1;
             ViewBag.Prev = false;
             ViewBag.Next = true;
@@ -66,6 +75,31 @@ namespace MVC_Day1_Money.Controllers
             }
 
             return DBData;
+        }
+
+        [HttpPost]
+        public ActionResult Add(Money money)
+        {
+            AccountBook AddData = new AccountBook
+            {
+                Id = Guid.NewGuid(),
+                Categoryyy = int.Parse(money.SpendClass),
+                Dateee = (DateTime)money.SpendTime,
+                //Dateee = DateTime.Now,
+                Amounttt = money.SpenSum,
+                Remarkkk = money.Description
+            };
+            MoneyDB.AccountBook.Add(AddData);
+            try
+            {
+                MoneyDB.SaveChanges();
+            }
+            catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+            {
+                Console.Write(ex.EntityValidationErrors.ToString());
+            }
+            return RedirectToAction("index");
+            //return View("index");
         }
     }
 }

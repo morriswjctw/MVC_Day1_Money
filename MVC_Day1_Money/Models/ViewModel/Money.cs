@@ -11,5 +11,6 @@ namespace MVC_Day1_Money.Models.ViewModel
         public string SpendClass { get; set; }
         public DateTime SpendTime{ get; set; }
         public int SpenSum { get; set; }
+        public string Description { get; set; }
     }
 }

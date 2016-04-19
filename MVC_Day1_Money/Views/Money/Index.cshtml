@@ -1,79 +1,110 @@
-﻿@model IEnumerable<MVC_Day1_Money.Models.ViewModel.Money>
+﻿@model  MVC_Day1_Money.Models.ViewModel.Money
 @{
     ViewBag.Title = "Index";
 }
 
 <div class="well">
-    <form class="form-horizontal">
-        <div class="form-group">
-            <label for="category" class="col-sm-2 control-label">類別</label>
-            <div class="col-sm-10">
-                @Html.DropDownList("category", (IEnumerable<SelectListItem>)ViewBag.Categorys, "請選擇", new {style="width:120px;"})
-                @*<select id="category" class="form-control">
-                    <option value="" selected>請選擇</option>
-                    <option>支出</option>
-                    <option>收入</option>
-                </select>*@
+    @using (Html.BeginForm("Add", "Money", FormMethod.Post))
+    {
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="category" class="col-sm-2 control-label">類別</label>
+                <div class="col-sm-10">
+                    @Html.DropDownList("SpendClass", (IEnumerable<SelectListItem>)ViewBag.Categorys, null, new { style = "width:120px;" })
+                    @*<select id="category" class="form-control">
+                            <option value="" selected>請選擇</option>
+                            <option>支出</option>
+                            <option>收入</option>
+                        </select>*@
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="money" class="col-sm-2 control-label">金額</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control" id="SpenSum" placeholder="金額">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="date" class="col-sm-2 control-label">日期</label>
+                <div class="col-sm-10">
+                    <input type="date" class="form-control" id="SpendTime" placeholder="日期" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="description" class="col-sm-2 control-label">備註</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control" id="Description"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-8 col-sm-4">
+                    <button type="submit" class="btn btn-default">送出</button>
+                </div>
             </div>
         </div>
-        <div class="form-group">
-            <label for="money" class="col-sm-2 control-label">金額</label>
-            <div class="col-sm-10">
-                <input type="number" class="form-control" id="money" placeholder="金額">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="date" class="col-sm-2 control-label">日期</label>
-            <div class="col-sm-10">
-                <input type="date" class="form-control" id="date" placeholder="日期" value="@DateTime.Now.ToString("yyyy-MM-dd")">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="description" class="col-sm-2 control-label">備註</label>
-            <div class="col-sm-10">
-                <textarea class="form-control" id="description"></textarea>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-offset-8 col-sm-4">
-                <button type="submit" class="btn btn-default">送出</button>
-            </div>
-        </div>
-    </form>
+    }
 </div>
 
 <div id="MoneyList" style="width:100%; text-align:center;">
-    @Html.Partial("_MoneyListPartialView")
+    @Html.Action("_MoneyListPartialView")
+    @*@Html.Partial("_MoneyListPartialView")*@
 </div>
 
 @section scripts {
-<script>
-    $(function () {
-        $(document).on("click", "#next", function () {
-            var $Page = parseInt($("#Page").html()) + 1;
-            var $TotalPages = parseInt($("#TotalPages").html());
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("ChangePage", "Money")",
-                data: { Page:$Page, TotalPages : $TotalPages},
-                success: function (data) {
-                    $("#MoneyList").empty().html(data);
-                }
-            });
-        });
+    <script>
+        $(function () {
 
-        $(document).on("click", "#prev", function () {
-            var $Page = parseInt($("#Page").html()) - 1;
-            var $TotalPages = parseInt($("#TotalPages").html());
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("ChangePage", "Money")",
-                data: { Page:$Page, TotalPages : $TotalPages},
-            success: function (data) {
-                $("#MoneyList").empty().html(data);
-            }
-        });
-    });
-    })
-</script>
+            $(document).on("click", "#next", function () {
+                var $Page = parseInt($("#Page").html()) + 1;
+                var $TotalPages = parseInt($("#TotalPages").html());
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("ChangePage", "Money")",
+                    data: { Page: $Page, TotalPages: $TotalPages },
+                    success: function (data) {
+                        $("#MoneyList").empty().html(data);
+                    }
+                });
+            });
+
+            $(document).on("click", "#prev", function () {
+                var $Page = parseInt($("#Page").html()) - 1;
+                var $TotalPages = parseInt($("#TotalPages").html());
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("ChangePage", "Money")",
+                    data: { Page: $Page, TotalPages: $TotalPages },
+                    success: function (data) {
+                        $("#MoneyList").empty().html(data);
+                    }
+                });
+            });
+
+            $(document).on("click", "#first", function () {
+                var $Page = 1;
+                var $TotalPages = parseInt($("#TotalPages").html());
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("ChangePage", "Money")",
+                    data: { Page: $Page, TotalPages: $TotalPages },
+                    success: function (data) {
+                        $("#MoneyList").empty().html(data);
+                    }
+                });
+            });
+
+            $(document).on("click", "#last", function () {
+                var $Page = parseInt($("#TotalPages").html());
+                var $TotalPages = parseInt($("#TotalPages").html());
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("ChangePage", "Money")",
+                    data: { Page: $Page, TotalPages: $TotalPages },
+                    success: function (data) {
+                        $("#MoneyList").empty().html(data);
+                    }
+                });
+            });
+        })
+    </script>
 }

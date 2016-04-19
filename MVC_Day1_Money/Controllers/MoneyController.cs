@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using MVC_Day1_Money.Models.ViewModel;
 using MVC_Day1_Money.Models;
+using System.Data.SqlTypes;
 
 namespace MVC_Day1_Money.Controllers
 {
@@ -63,7 +64,7 @@ namespace MVC_Day1_Money.Controllers
         {
             var DBData = new List<Money>();
             int i = (page-1) * 50;
-            foreach(var item in MoneyDB.AccountBook.OrderBy(c => c.Id).Skip((page-1)*50).Take(50).ToList())
+            foreach(var item in MoneyDB.AccountBook.OrderBy(c => c.Dateee).Skip((page-1)*50).Take(50).ToList())
             {
                 DBData.Add(new Money()
                 {
@@ -80,24 +81,20 @@ namespace MVC_Day1_Money.Controllers
         [HttpPost]
         public ActionResult Add(Money money)
         {
+            if (!ModelState.IsValid)
+                return Content("");
+
+            MoneyDB.Configuration.ValidateOnSaveEnabled = false;
             AccountBook AddData = new AccountBook
             {
                 Id = Guid.NewGuid(),
                 Categoryyy = int.Parse(money.SpendClass),
-                Dateee = (DateTime)money.SpendTime,
-                //Dateee = DateTime.Now,
+                Dateee = money.SpendTime,
                 Amounttt = money.SpenSum,
                 Remarkkk = money.Description
             };
             MoneyDB.AccountBook.Add(AddData);
-            try
-            {
-                MoneyDB.SaveChanges();
-            }
-            catch (System.Data.Entity.Validation.DbEntityValidationException ex)
-            {
-                Console.Write(ex.EntityValidationErrors.ToString());
-            }
+            MoneyDB.SaveChanges();
             return RedirectToAction("index");
             //return View("index");
         }

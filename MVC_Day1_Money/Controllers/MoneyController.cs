@@ -21,14 +21,22 @@ namespace MVC_Day1_Money.Controllers
                 new Money() {Id = 3, SpendClass = "支出", SpendTime = DateTime.Now, SpenSum = 3000 }
             };
         
-        private List<SelectListItem> Categorys = new List<SelectListItem>() {
-            new SelectListItem { Text = "支出", Value = ((int)MoneyCategory.支出).ToString() },
-            new SelectListItem{ Text = "收入", Value = ((int)(MoneyCategory.收入)).ToString() }
-        };
+        //private List<SelectListItem> Categorys = new List<SelectListItem>() {
+        //    new SelectListItem { Text = "支出", Value = ((int)MoneyCategory.支出).ToString() },
+        //    new SelectListItem{ Text = "收入", Value = ((int)(MoneyCategory.收入)).ToString() }
+        //};
         
         // GET: Money
         public ActionResult Index()
         {
+            List<SelectListItem> Categorys = new List<SelectListItem>();
+            for (int i = 0; i< Enum.GetNames(typeof(MoneyCategory)).Length; i++)
+            {
+                Categorys.Add(new SelectListItem {
+                    Text = Enum.GetName(typeof(MoneyCategory), i),
+                    Value = i.ToString()
+                });
+            }
             ViewBag.Categorys = Categorys;
             return View();
             //List<Money> Moneys = GetMoney();
@@ -43,8 +51,6 @@ namespace MVC_Day1_Money.Controllers
             ViewBag.TotalPages = TotalPages;
             ViewBag.Counts = DataCount;
             ViewBag.Page = 1;
-            ViewBag.Prev = false;
-            ViewBag.Next = true;
             List<Money> Moneys = GetMoney();
             return View(Moneys);
         }
@@ -55,8 +61,6 @@ namespace MVC_Day1_Money.Controllers
             List<Money> Moneys = GetMoney(Page);
             ViewBag.Page = Page;
             ViewBag.TotalPages = TotalPages;
-            ViewBag.Prev = Page == 1 ? false : true;
-            ViewBag.Next = Page == TotalPages ? false : true;
             return PartialView("_MoneyListPartialView", Moneys);
         }
 
@@ -89,7 +93,7 @@ namespace MVC_Day1_Money.Controllers
             {
                 Id = Guid.NewGuid(),
                 Categoryyy = int.Parse(money.SpendClass),
-                Dateee = money.SpendTime,
+                Dateee = money.SpendTime.Date,
                 Amounttt = money.SpenSum,
                 Remarkkk = money.Description
             };

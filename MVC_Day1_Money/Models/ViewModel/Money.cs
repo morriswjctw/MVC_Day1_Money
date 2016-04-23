@@ -11,7 +11,7 @@ namespace MVC_Day1_Money.Models.ViewModel
         public int Id { get; set; }
         public string SpendClass { get; set; }
         [DataType(DataType.Date)]
-        public DateTime SpendTime{ get; set; }
+        public System.DateTime SpendTime{ get; set; }
         public int SpenSum { get; set; }
         public string Description { get; set; }
     }

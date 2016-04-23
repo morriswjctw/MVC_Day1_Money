@@ -11,36 +11,32 @@ namespace MVC_Day1_Money.Controllers
 {
     public class MoneyController : Controller
     {
-        enum MoneyCategory { 支出, 收入 };
+        Dictionary<int, string> MoneyCategory = 
+            new Dictionary<int, string>(){ {0,"支出"},{1,"收入"}};
         MoneyDBEntities MoneyDB = new MoneyDBEntities();
         
-        private static List<Money> Spends = new List<Money>()
-            {
-                new Money() { Id = 1, SpendClass = "支出", SpendTime = DateTime.Now, SpenSum = 1000 },
-                new Money() { Id = 2, SpendClass = "支出", SpendTime = DateTime.Now, SpenSum = 2000},
-                new Money() {Id = 3, SpendClass = "支出", SpendTime = DateTime.Now, SpenSum = 3000 }
-            };
-        
-        //private List<SelectListItem> Categorys = new List<SelectListItem>() {
-        //    new SelectListItem { Text = "支出", Value = ((int)MoneyCategory.支出).ToString() },
-        //    new SelectListItem{ Text = "收入", Value = ((int)(MoneyCategory.收入)).ToString() }
-        //};
+        //private static List<Money> Spends = new List<Money>()
+        //    {
+        //        new Money() { Id = 1, SpendClass = "支出", SpendTime = DateTime.Now, SpenSum = 1000 },
+        //        new Money() { Id = 2, SpendClass = "支出", SpendTime = DateTime.Now, SpenSum = 2000},
+        //        new Money() {Id = 3, SpendClass = "支出", SpendTime = DateTime.Now, SpenSum = 3000 }
+        //    };
         
         // GET: Money
         public ActionResult Index()
         {
             List<SelectListItem> Categorys = new List<SelectListItem>();
-            for (int i = 0; i< Enum.GetNames(typeof(MoneyCategory)).Length; i++)
+            foreach(var item in MoneyCategory)
             {
-                Categorys.Add(new SelectListItem {
-                    Text = Enum.GetName(typeof(MoneyCategory), i),
-                    Value = i.ToString()
+                Categorys.Add(new SelectListItem
+                {
+                    Text = item.Value,
+                    Value = item.Key.ToString()
                 });
             }
+            //Enum.GetName(typeof(MoneyCategory), i)
             ViewBag.Categorys = Categorys;
             return View();
-            //List<Money> Moneys = GetMoney();
-            //return View(Moneys);
         }
 
         public ActionResult _MoneyListPartialView()
@@ -73,7 +69,7 @@ namespace MVC_Day1_Money.Controllers
                 DBData.Add(new Money()
                 {
                     Id = ++i,
-                    SpendClass = Enum.GetName(typeof(MoneyCategory), item.Categoryyy),//((MoneyCategory)Enum.Parse(typeof(MoneyCategory), item.Categoryyy.ToString())).ToString(),
+                    SpendClass = MoneyCategory[item.Categoryyy],//Enum.GetName(typeof(MoneyCategory), item.Categoryyy),//((MoneyCategory)Enum.Parse(typeof(MoneyCategory), item.Categoryyy.ToString())).ToString(),
                     SpendTime = item.Dateee,
                     SpenSum = item.Amounttt
                 });
@@ -89,6 +85,8 @@ namespace MVC_Day1_Money.Controllers
                 return Content("");
 
             MoneyDB.Configuration.ValidateOnSaveEnabled = false;
+            Console.WriteLine(money.SpendTime.ToString());
+            Console.WriteLine(money.SpendTime.Date.ToString());
             AccountBook AddData = new AccountBook
             {
                 Id = Guid.NewGuid(),
@@ -100,7 +98,6 @@ namespace MVC_Day1_Money.Controllers
             MoneyDB.AccountBook.Add(AddData);
             MoneyDB.SaveChanges();
             return RedirectToAction("index");
-            //return View("index");
         }
     }
 }

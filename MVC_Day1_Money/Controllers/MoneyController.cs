@@ -79,22 +79,32 @@ namespace MVC_Day1_Money.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(Money money)
+        public ActionResult Add(int SpendClass, DateTime? SpendTime, int SpenSum, string Description)
         {
             if (!ModelState.IsValid)
                 return Content("");
 
-            MoneyDB.Configuration.ValidateOnSaveEnabled = false;
-            Console.WriteLine(money.SpendTime.ToString());
-            Console.WriteLine(money.SpendTime.Date.ToString());
+            DateTime dt = DateTime.Now;
+            if (SpendTime != null)
+                dt = SpendTime.Value;
+            //MoneyDB.Configuration.ValidateOnSaveEnabled = false;
             AccountBook AddData = new AccountBook
             {
                 Id = Guid.NewGuid(),
-                Categoryyy = int.Parse(money.SpendClass),
-                Dateee = money.SpendTime.Date,
-                Amounttt = money.SpenSum,
-                Remarkkk = money.Description
+                Categoryyy = SpendClass,
+                Dateee = dt,
+                Amounttt =SpenSum,
+                Remarkkk = Description
             };
+            //AccountBook AddData = new AccountBook
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Categoryyy = int.Parse(money.SpendClass),
+            //    //Dateee = money.SpendTime,
+            //    Dateee = DateTime.Now,
+            //    Amounttt = money.SpenSum,
+            //    Remarkkk = "222"//money.Description
+            //};
             MoneyDB.AccountBook.Add(AddData);
             MoneyDB.SaveChanges();
             return RedirectToAction("index");

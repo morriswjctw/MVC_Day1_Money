@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<MVC_Day1_Money.Models.ViewModel.Money>
+@using MVC_Day1_Money.Helper
+
 
 <div class="row">
     <div class="col-md-12">
@@ -25,7 +27,8 @@
                         @item.Id
                     </td>
                     <td>
-                        @item.SpendClass
+                        @Html.Raw(Html.SpenClasscolor(item.SpendClass))
+                        @*@item.SpendClass*@
                     </td>
                     <td>
                         @item.SpendTime.ToString("yyyy-MM-dd")

@@ -204,6 +204,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helper\MoneyHelper.cs" />
     <Compile Include="Models\AccountBook.cs">
       <DependentUpon>MoneyModels.tt</DependentUpon>
     </Compile>

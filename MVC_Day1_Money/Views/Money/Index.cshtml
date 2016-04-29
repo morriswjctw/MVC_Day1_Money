@@ -4,7 +4,8 @@
 }
 
 <div class="well">
-    @using (Html.BeginForm("Add", "Money", FormMethod.Post))
+    @*@using (Html.BeginForm("Add", "Money", FormMethod.Post))*@
+    @using (Ajax.BeginForm("Add","Money",new AjaxOptions { UpdateTargetId = "MoneyList", HttpMethod = "POST", OnSuccess="AddSuccess()" }))
     {
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true)
@@ -54,6 +55,7 @@
 
 @section scripts {
 @Scripts.Render("~/bundles/jqueryval")
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script>
         $.validator.addMethod("dayattribute", function (value, element, param) {
             if (value == false) {
@@ -69,6 +71,14 @@
             }
         });
         $.validator.unobtrusive.adapters.addSingleVal("dayattribute", "inputdays");
+
+        function AddSuccess() {
+            $("#SpendClass")[0].selectedIndex = 0;
+            $("#SpenSum").val("");
+            $("#Description").val("");
+            $("#SpendTime")[0].valueAsDate = new Date();
+            //document.getElementById('SpendTime').valueAsDate = new Date();
+        }
 
         $(function () {
 

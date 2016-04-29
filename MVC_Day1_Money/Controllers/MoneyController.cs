@@ -96,7 +96,8 @@ namespace MVC_Day1_Money.Controllers
 
             MoneyDB.AccountBook.Add(AddData);
             MoneyDB.SaveChanges();
-            return RedirectToAction("index");
+            return RedirectToAction("_MoneyListPartialView");
+            //return RedirectToAction("index");
         }
     }
 }

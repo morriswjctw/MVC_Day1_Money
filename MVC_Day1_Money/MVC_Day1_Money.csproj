@@ -228,6 +228,7 @@
     <Compile Include="Models\ViewModel\Money.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ValidationAttributes\DayAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\SkillTreeHomework.mdf" />

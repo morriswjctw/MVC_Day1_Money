@@ -34,7 +34,7 @@
             <div class="form-group">
                 <label for="description" class="col-sm-2 control-label">備註</label>
                 <div class="col-sm-10">
-                    @Html.TextAreaFor(m=>m.Description, new { @class= "form-control" })
+                    @Html.TextAreaFor(m=>m.Description, new { @class= "form-control", @maxlength="100" })
                     @Html.ValidationMessageFor(m=>m.Description)
                 </div>
             </div>

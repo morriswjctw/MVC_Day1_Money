@@ -25,6 +25,7 @@
                 <tr>
                     <td>
                         @item.Id
+                        @*@Ajax.ActionLink(item.Id.ToString(), "Edit", "Money", new { MoneyId = item.Key }, new AjaxOptions { UpdateTargetId = "MoneyDetail", HttpMethod = "GET" })*@
                     </td>
                     <td>
                         @Html.Raw(Html.SpenClasscolor(item.SpendClass))

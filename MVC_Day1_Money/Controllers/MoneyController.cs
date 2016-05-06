@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using MVC_Day1_Money.Models.ViewModel;
 using MVC_Day1_Money.Models;
 using System.Data.SqlTypes;
+using MVC_Day1_Money.Filter;
 
 namespace MVC_Day1_Money.Controllers
 {
@@ -15,14 +16,8 @@ namespace MVC_Day1_Money.Controllers
             new Dictionary<int, string>(){ {0,"支出"},{1,"收入"}};
         MoneyDBEntities MoneyDB = new MoneyDBEntities();
         
-        //private static List<Money> Spends = new List<Money>()
-        //    {
-        //        new Money() { Id = 1, SpendClass = "支出", SpendTime = DateTime.Now, SpenSum = 1000 },
-        //        new Money() { Id = 2, SpendClass = "支出", SpendTime = DateTime.Now, SpenSum = 2000},
-        //        new Money() {Id = 3, SpendClass = "支出", SpendTime = DateTime.Now, SpenSum = 3000 }
-        //    };
-        
         // GET: Money
+        //[LogAttribute]
         public ActionResult Index()
         {
             List<SelectListItem> Categorys = new List<SelectListItem>();
@@ -68,6 +63,7 @@ namespace MVC_Day1_Money.Controllers
             {
                 DBData.Add(new Money()
                 {
+                    Key = item.Id,
                     Id = ++i,
                     SpendClass = MoneyCategory[item.Categoryyy],//Enum.GetName(typeof(MoneyCategory), item.Categoryyy),//((MoneyCategory)Enum.Parse(typeof(MoneyCategory), item.Categoryyy.ToString())).ToString(),
                     SpendTime = item.Dateee,
@@ -77,14 +73,14 @@ namespace MVC_Day1_Money.Controllers
 
             return DBData;
         }
-
+        
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Add(int SpendClass, DateTime SpendTime, int SpenSum, string Description)
         {
             if (!ModelState.IsValid)
                 return Content("");
-
-            //MoneyDB.Configuration.ValidateOnSaveEnabled = false;
+            
             AccountBook AddData = new AccountBook
             {
                 Id = Guid.NewGuid(),
@@ -98,6 +94,48 @@ namespace MVC_Day1_Money.Controllers
             MoneyDB.SaveChanges();
             return RedirectToAction("_MoneyListPartialView");
             //return RedirectToAction("index");
+        }
+
+        [HttpGet]
+        public PartialViewResult Edit(System.Guid MoneyId)
+        {
+            var AccountBook = MoneyDB.AccountBook.Single(c => c.Id == MoneyId);
+            Money MoneyDetail = new Money()
+            {
+                Key = AccountBook.Id,
+                SpendClass = MoneyCategory[AccountBook.Categoryyy],
+                SpendTime = AccountBook.Dateee,
+                SpenSum = AccountBook.Amounttt,
+                Description = AccountBook.Remarkkk
+            };
+            List<SelectListItem> Categorys = new List<SelectListItem>();
+            foreach (var item in MoneyCategory)
+            {
+                Categorys.Add(new SelectListItem
+                {
+                    Text = item.Value,
+                    Value = item.Key.ToString(),
+                    Selected = item.Key.Equals(AccountBook.Categoryyy)
+                });
+            }
+            ViewBag.Categorys = Categorys;
+            return PartialView("Edit", MoneyDetail);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(Money MoneyEdit)
+        {
+            var AccountBook = MoneyDB.AccountBook.Single(c => c.Id == MoneyEdit.Key);
+            
+            if (AccountBook != null)
+            {
+                AccountBook.Categoryyy = int.Parse(MoneyEdit.SpendClass);
+                AccountBook.Dateee = MoneyEdit.SpendTime;
+                AccountBook.Amounttt = MoneyEdit.SpenSum;
+                AccountBook.Remarkkk = MoneyEdit.Description;
+                MoneyDB.SaveChanges();
+            }
+            return RedirectToAction("index");
         }
     }
 }
